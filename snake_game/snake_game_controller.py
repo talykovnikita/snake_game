@@ -1,5 +1,6 @@
 from snake_game import app_logger
 
+import logging
 from typing import List, Tuple
 from snake_game.models.food.food import Food
 from snake_game.models.food.apple import Apple
@@ -7,7 +8,7 @@ from snake_game.models.snake.snake import Snake
 from snake_game.utils.enums import Directions
 from random import randint
 
-logger = app_logger.get_logger(__name__)
+logger = app_logger.get_logger(__name__, level=logging.DEBUG)
 
 
 class SnakeGameController:
