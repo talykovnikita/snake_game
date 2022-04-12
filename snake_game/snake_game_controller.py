@@ -12,6 +12,7 @@ logger = app_logger.get_logger(__name__)
 
 class SnakeGameController:
     is_game_over: bool = False
+    record: int = 0
 
     def __init__(
         self,
@@ -35,8 +36,8 @@ class SnakeGameController:
             f"{self.snake=}\n"
             f"{self._current_snake_direction=}\n"
             f"{self.food=}\n"
-            f"{self.pixel_size}\n"
-            f"{self.is_food_spawn}\n"
+            f"{self.pixel_size=}\n"
+            f"{self.is_food_spawn=}\n"
         )
 
     @property
@@ -57,6 +58,7 @@ class SnakeGameController:
             )
             return
 
+        logger.debug(f"Old direction was: {self._current_snake_direction}")
         self._current_snake_direction = new_direction
         logger.debug(f"New direction was set: {self._current_snake_direction}")
 
