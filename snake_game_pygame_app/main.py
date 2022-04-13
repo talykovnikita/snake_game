@@ -94,7 +94,7 @@ def draw_food(game_surface: Surface, game_controller: SnakeGameController):
 def draw_score_board(game_surface: Surface, game_controller: SnakeGameController):
     font = pygame.font.Font(pygame.font.get_default_font(), 16)
     text = (
-        f"Score: {len(game_controller.snake.body)} (Record: {game_controller.record})"
+        f"Score: {game_controller.current_score} (Record: {game_controller.record})"
     )
     score_surface = font.render(text, True, Colors.WHITE.value)
     game_surface.blit(score_surface, (0, 0))

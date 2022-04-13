@@ -1,12 +1,12 @@
-from snake_game import app_logger
-
 import logging
+from random import randint
 from typing import List, Tuple
-from snake_game.models.food.food import Food
+
+from snake_game import app_logger
 from snake_game.models.food.apple import Apple
+from snake_game.models.food.food import Food
 from snake_game.models.snake.snake import Snake
 from snake_game.utils.enums import Directions
-from random import randint
 
 logger = app_logger.get_logger(__name__, level=logging.DEBUG)
 
@@ -16,10 +16,10 @@ class SnakeGameController:
     record: int = 0
 
     def __init__(
-        self,
-        field_size: Tuple[int, int],
-        head_start_pos: Tuple[int, int],
-        pixel_size: Tuple[int, int],
+            self,
+            field_size: Tuple[int, int],
+            head_start_pos: Tuple[int, int],
+            pixel_size: Tuple[int, int],
     ):
         self.field_size = field_size
         self.snake: Snake = Snake(head_start_pos=head_start_pos)
@@ -27,6 +27,8 @@ class SnakeGameController:
         self.food: List[Food] = []
         self.pixel_size = pixel_size
         self.is_food_spawn = False
+
+        self._load_record()
 
         logger.debug(self)
 
@@ -39,7 +41,12 @@ class SnakeGameController:
             f"{self.food=}\n"
             f"{self.pixel_size=}\n"
             f"{self.is_food_spawn=}\n"
+            f"{self.record=}\n"
         )
+
+    @property
+    def current_score(self):
+        return len(self.snake.body)
 
     @property
     def current_snake_direction(self):
@@ -51,8 +58,8 @@ class SnakeGameController:
             logger.debug(f"Invalid was skipped direction: {new_direction}")
             return
         if (
-            new_direction.value[0] + self._current_snake_direction.value[0] == 0
-            and new_direction.value[1] + self._current_snake_direction.value[1] == 0
+                new_direction.value[0] + self._current_snake_direction.value[0] == 0
+                and new_direction.value[1] + self._current_snake_direction.value[1] == 0
         ):
             logger.debug(
                 f"Impossible change direction to opposite one: {new_direction}"
@@ -62,6 +69,26 @@ class SnakeGameController:
         logger.debug(f"Old direction was: {self._current_snake_direction}")
         self._current_snake_direction = new_direction
         logger.debug(f"New direction was set: {self._current_snake_direction}")
+
+    def _load_record(self):
+        try:
+            with open("record.txt", "r") as f:
+                self.record = int(f.read())
+        except Exception as e:
+            logger.debug(f"Unexpected {e=}, {type(e)=}")
+            self.record = 0
+
+    def _save_record(self):
+        if self.current_score > self.record:
+            try:
+                with open("record.txt", "w") as f:
+                    f.write(str(self.current_score))
+                    logger.debug(f"New recors is: {self.current_score}")
+                    return
+            except Exception as e:
+                logger.debug(f"Unexpected {e=}, {type(e)=}")
+
+        logger.debug(f"Record is not beaten. Current score: {self.current_score}. Record: {self.record}")
 
     def _rect_pos_to_circle_pos(self, position: Tuple[int, int]) -> Tuple[int, int]:
         return (
@@ -121,6 +148,7 @@ class SnakeGameController:
             if pos == new_pos:
                 self.is_game_over = True
                 logger.debug(f"The game was loosed. Collision at position: {new_pos}")
+                self._save_record()
 
         return new_pos
 
