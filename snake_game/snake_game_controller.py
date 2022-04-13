@@ -16,10 +16,10 @@ class SnakeGameController:
     record: int = 0
 
     def __init__(
-            self,
-            field_size: Tuple[int, int],
-            head_start_pos: Tuple[int, int],
-            pixel_size: Tuple[int, int],
+        self,
+        field_size: Tuple[int, int],
+        head_start_pos: Tuple[int, int],
+        pixel_size: Tuple[int, int],
     ):
         self.field_size = field_size
         self.snake: Snake = Snake(head_start_pos=head_start_pos)
@@ -58,8 +58,8 @@ class SnakeGameController:
             logger.debug(f"Invalid was skipped direction: {new_direction}")
             return
         if (
-                new_direction.value[0] + self._current_snake_direction.value[0] == 0
-                and new_direction.value[1] + self._current_snake_direction.value[1] == 0
+            new_direction.value[0] + self._current_snake_direction.value[0] == 0
+            and new_direction.value[1] + self._current_snake_direction.value[1] == 0
         ):
             logger.debug(
                 f"Impossible change direction to opposite one: {new_direction}"
@@ -88,7 +88,9 @@ class SnakeGameController:
             except Exception as e:
                 logger.debug(f"Unexpected {e=}, {type(e)=}")
 
-        logger.debug(f"Record is not beaten. Current score: {self.current_score}. Record: {self.record}")
+        logger.debug(
+            f"Record is not beaten. Current score: {self.current_score}. Record: {self.record}"
+        )
 
     def _rect_pos_to_circle_pos(self, position: Tuple[int, int]) -> Tuple[int, int]:
         return (
